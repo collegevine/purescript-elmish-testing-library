@@ -2,25 +2,37 @@ module Test.Main where
 
 import Prelude
 
-import Debug (traceM)
 import Effect (Effect)
+import Effect.Aff (launchAff_)
 import Elmish (Dispatch, ReactElement, Transition)
 import Elmish.HTML.Styled as H
-import Elmish.Test (find, testComponent, text, within)
+import Elmish.Test (find, tagName, testComponent, text, within, ($$), (>>))
+import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
+import Test.Spec.Reporter (consoleReporter)
+import Test.Spec.Runner (runSpec)
 
 main :: Effect Unit
-main = do
-  traceM "foo"
-  -- testComponent { init, view, update } do
-  --   traceM "bar"
-  --   el <- find ".t--inc"
-  --   traceM "qux"
-  --   within el $
-  --     text >>= shouldEqual "Inc"
-  traceM "baz"
---  done
-  traceM "dd"
+main = launchAff_ $ runSpec [consoleReporter] spec
+
+spec :: Spec Unit
+spec =
+  describe "Counter component" $
+    it "Should render two buttons and a count" $
+      testComponent { init, view, update } do
+        -- within
+        within ".t--dec" do
+          text >>= shouldEqual "Dec"
+          tagName >>= shouldEqual "BUTTON"
+
+        -- chaining operations with >>
+        find ".t--inc" >> text >>= shouldEqual "Inc"
+
+        -- naming the element, then applying operation to it with $$
+        count <- find ".t--count"
+        strCount <- text $$ count
+        strCount `shouldEqual` "0"
+
 
 
 type State = { count :: Int }
@@ -41,6 +53,3 @@ view state dispatch =
   , H.button_ "t--inc" { onClick: dispatch Inc } "Inc"
   , H.button_ "t--dec" { onClick: dispatch Dec } "Dec"
   ]
-
-
-foreign import done :: Effect Unit

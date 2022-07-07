@@ -2,7 +2,9 @@
   "name": "elmish-testing-library",
   "version": "0.1.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "spago install",
+    "build": "spago build",
+    "test": "spago test"
   },
   "author": {
     "name": "Fyodor Soikin",
@@ -13,8 +15,6 @@
   "dependencies": {
     "@happy-dom/global-registrator": "^6.0.2",
     "esbuild": "^0.14.48",
-    "global-jsdom": "^8.5.0",
-    "jsdom": "^20.0.0",
     "purescript": "^0.15.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

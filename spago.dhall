@@ -1,7 +1,7 @@
 { name = "elmish-testing-library"
 , dependencies =
   [ "arrays"
-  , "console"
+  , "aff"
   , "debug"
   , "effect"
   , "elmish"

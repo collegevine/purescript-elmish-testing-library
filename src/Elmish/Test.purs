@@ -31,7 +31,7 @@ instance MonadEffect m => Testable (ReaderT TestState m)
 
 testComponent :: forall m a msg state. MonadEffect m => ComponentDef msg state -> ReaderT TestState m a -> m a
 testComponent def go = do
-  liftEffect ensureJsDom
+  liftEffect ensureDom
   root <- liftEffect $ window >>= document <#> toDocument >>= createElement "div"
   reactEl <- liftEffect $ construct def
   liftEffect $ React.render reactEl root
@@ -51,9 +51,25 @@ findAll selector = do
     >>= NodeList.toArray
     <#> mapMaybe DOM.fromNode
 
-within :: forall m. Testable m => Element -> m Unit -> m Unit
-within el = local \(TestState s) -> TestState s { current = el }
+within :: forall m a. Testable m => String -> m a -> m a
+within selector f = do
+  el <- find selector
+  within' el f
 
+within' :: forall m a. Testable m => Element -> m a -> m a
+within' el = local \(TestState s) -> TestState s { current = el }
+
+infixl 8 chainM as >>
+
+chainM :: forall m a. Testable m => m Element -> m a -> m a
+chainM getEl f = do
+  el <- getEl
+  within' el f
+
+infixl 8 chain as $$
+
+chain :: forall m a. Testable m => m a -> Element -> m a
+chain = flip within'
 
 text :: forall m. Testable m => m String
 text = askCurrent >>= (liftEffect <<< runEffectFn1 innerText)
@@ -75,4 +91,4 @@ crash = liftEffect <<< throwError <<< error
 
 foreign import innerText :: EffectFn1 Element String
 
-foreign import ensureJsDom :: Effect Unit
+foreign import ensureDom :: Effect Unit
