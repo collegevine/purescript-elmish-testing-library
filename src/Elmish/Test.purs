@@ -6,6 +6,7 @@ import Control.Monad.Error.Class (throwError)
 import Control.Monad.Reader (class MonadReader, ReaderT, ask, local, runReaderT)
 import Data.Array (length, mapMaybe)
 import Data.Maybe (fromMaybe)
+import Data.Traversable (traverse_)
 import Effect (Effect)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Exception (error)
@@ -15,10 +16,12 @@ import Elmish.React as React
 import Web.DOM (Element)
 import Web.DOM.Document (createElement)
 import Web.DOM.Element as DOM
+import Web.DOM.Node (appendChild)
 import Web.DOM.NodeList as NodeList
 import Web.DOM.ParentNode (QuerySelector(..), querySelectorAll)
 import Web.HTML (window)
-import Web.HTML.HTMLDocument (toDocument)
+import Web.HTML.HTMLDocument (body, toDocument)
+import Web.HTML.HTMLElement as H
 import Web.HTML.Window (document)
 
 newtype TestState = TestState
@@ -31,11 +34,21 @@ instance MonadEffect m => Testable (ReaderT TestState m)
 
 testComponent :: forall m a msg state. MonadEffect m => ComponentDef msg state -> ReaderT TestState m a -> m a
 testComponent def go = do
-  liftEffect ensureDom
-  root <- liftEffect $ window >>= document <#> toDocument >>= createElement "div"
-  reactEl <- liftEffect $ construct def
-  liftEffect $ React.render reactEl root
+  root <- liftEffect mount
   runReaderT go $ TestState { root, current: root }
+  where
+    mount = do
+      ensureDom
+
+      doc <- window >>= document
+      root <- doc # toDocument # createElement "div"
+      doc # body >>= traverse_ \theBody ->
+        appendChild (DOM.toNode root) (H.toNode theBody)
+
+      reactEl <- construct def
+      React.render reactEl root
+
+      pure root
 
 find :: forall m. Testable m => String -> m Element
 find selector =

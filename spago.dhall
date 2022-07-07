@@ -7,6 +7,7 @@
   , "elmish"
   , "elmish-html"
   , "exceptions"
+  , "foldable-traversable"
   , "maybe"
   , "prelude"
   , "spec"
