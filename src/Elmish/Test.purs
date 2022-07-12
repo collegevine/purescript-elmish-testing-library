@@ -10,8 +10,9 @@ import Data.Traversable (traverse_)
 import Effect (Effect)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Exception (error)
-import Effect.Uncurried (EffectFn1, runEffectFn1)
+import Effect.Uncurried (EffectFn1, EffectFn3, runEffectFn1, runEffectFn3)
 import Elmish (ComponentDef, construct)
+import Elmish.Foreign (class CanPassToJavaScript)
 import Elmish.React as React
 import Web.DOM (Element)
 import Web.DOM.Document (createElement)
@@ -32,13 +33,13 @@ newtype TestState = TestState
 class (MonadReader TestState m, MonadEffect m) <= Testable m
 instance MonadEffect m => Testable (ReaderT TestState m)
 
-testComponent :: forall m a msg state. MonadEffect m => ComponentDef msg state -> ReaderT TestState m a -> m a
+testComponent :: ∀ m a msg state. MonadEffect m => ComponentDef msg state -> ReaderT TestState m a -> m a
 testComponent def go = do
   root <- liftEffect mount
   runReaderT go $ TestState { root, current: root }
   where
     mount = do
-      ensureDom
+      ensureDom_
 
       doc <- window >>= document
       root <- doc # toDocument # createElement "div"
@@ -50,13 +51,13 @@ testComponent def go = do
 
       pure root
 
-find :: forall m. Testable m => String -> m Element
+find :: ∀ m. Testable m => String -> m Element
 find selector =
   findAll selector >>= case _ of
     [el] -> pure el
     els -> crash $ "Expected to find one element matching '" <> selector <> "', but found " <> show (length els)
 
-findAll :: forall m. Testable m => String -> m (Array Element)
+findAll :: ∀ m. Testable m => String -> m (Array Element)
 findAll selector = do
   current <- askCurrent
   liftEffect $
@@ -64,44 +65,59 @@ findAll selector = do
     >>= NodeList.toArray
     <#> mapMaybe DOM.fromNode
 
-within :: forall m a. Testable m => String -> m a -> m a
+within :: ∀ m a. Testable m => String -> m a -> m a
 within selector f = do
   el <- find selector
   within' el f
 
-within' :: forall m a. Testable m => Element -> m a -> m a
+within' :: ∀ m a. Testable m => Element -> m a -> m a
 within' el = local \(TestState s) -> TestState s { current = el }
 
 infixl 8 chainM as >>
 
-chainM :: forall m a. Testable m => m Element -> m a -> m a
+chainM :: ∀ m a. Testable m => m Element -> m a -> m a
 chainM getEl f = do
   el <- getEl
   within' el f
 
 infixl 8 chain as $$
 
-chain :: forall m a. Testable m => m a -> Element -> m a
+chain :: ∀ m a. Testable m => m a -> Element -> m a
 chain = flip within'
 
-text :: forall m. Testable m => m String
-text = askCurrent >>= (liftEffect <<< runEffectFn1 innerText)
+text :: ∀ m. Testable m => m String
+text = askCurrent >>= (liftEffect <<< runEffectFn1 innerText_)
 
-tagName :: forall m. Testable m => m String
+tagName :: ∀ m. Testable m => m String
 tagName = askCurrent <#> DOM.tagName
 
-debug :: forall m. Testable m => m String
-debug = pure ""
-
-attr :: forall m. Testable m => String -> m String
+attr :: ∀ m. Testable m => String -> m String
 attr name = askCurrent >>= \e -> liftEffect $ DOM.getAttribute name e <#> fromMaybe ""
 
-askCurrent :: forall m. Testable m => m Element
+value :: ∀ m. Testable m => m String
+value = askCurrent >>= (liftEffect <<< runEffectFn1 value_)
+
+fireEvent :: ∀ m r. Testable m => CanPassToJavaScript (Record r) => String -> Record r -> m Unit
+fireEvent name args = askCurrent >>= \e ->
+  liftEffect $ runEffectFn3 fireEvent_ name args e
+
+debug :: ∀ m. Testable m => m String
+debug = pure ""
+
+--
+--
+--
+
+askCurrent :: ∀ m. Testable m => m Element
 askCurrent = ask <#> \(TestState s) -> s.current
 
-crash :: forall m a. Testable m => String -> m a
+crash :: ∀ m a. Testable m => String -> m a
 crash = liftEffect <<< throwError <<< error
 
-foreign import innerText :: EffectFn1 Element String
+foreign import innerText_ :: EffectFn1 Element String
 
-foreign import ensureDom :: Effect Unit
+foreign import value_ :: EffectFn1 Element String
+
+foreign import fireEvent_ :: ∀ args. EffectFn3 String args Element Unit
+
+foreign import ensureDom_ :: Effect Unit
