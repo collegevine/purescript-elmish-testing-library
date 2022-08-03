@@ -2,13 +2,12 @@ module Test.Main where
 
 import Prelude
 
-import Debug (trace, traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
-import Elmish (Dispatch, ReactElement, Transition, withTrace, (<?|))
+import Elmish (Dispatch, ReactElement, Transition, (<?|))
 import Elmish.Foreign (readForeign)
 import Elmish.HTML.Styled as H
-import Elmish.Test (find, tagName, testComponent, text, value, within, ($$), (>>))
+import Elmish.Test (find, tagName, testComponent, text, value, within, (##), ($$), (>>))
 import Elmish.Test.Events (change, clickOn)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -23,7 +22,7 @@ spec :: Spec Unit
 spec =
   describe "Counter component" $
     it "Should render two buttons and a count" $
-      testComponent (withTrace { init, view, update }) do
+      testComponent { init, view, update } do
         -- within
         within ".t--dec" do
           text >>= shouldEqual "Dec"
@@ -32,10 +31,12 @@ spec =
         -- chaining operations with >>
         find ".t--inc" >> text >>= shouldEqual "Inc"
 
-        -- naming the element, then applying operation to it with $$
+        -- naming the element, then applying operation to it with $$ and ##
         count <- find ".t--count"
         strCount <- text $$ count
         strCount `shouldEqual` "0"
+        countTag <- count ## tagName
+        countTag `shouldEqual` "DIV"
 
         -- click
         clickOn ".t--inc"

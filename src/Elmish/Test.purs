@@ -70,6 +70,8 @@ within selector f = do
   el <- find selector
   within' el f
 
+infixl 8 within' as ##
+
 within' :: ∀ m a. Testable m => Element -> m a -> m a
 within' el = local \(TestState s) -> TestState s { current = el }
 
@@ -84,6 +86,7 @@ infixl 8 chain as $$
 
 chain :: ∀ m a. Testable m => m a -> Element -> m a
 chain = flip within'
+
 
 text :: ∀ m. Testable m => m String
 text = askCurrent >>= (liftEffect <<< runEffectFn1 innerText_)
