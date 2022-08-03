@@ -2,13 +2,15 @@ module Test.Main where
 
 import Prelude
 
+import Data.Array (length)
+import Data.Traversable (for, for_)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Elmish (Dispatch, ReactElement, Transition, (<?|))
 import Elmish.Foreign (readForeign)
 import Elmish.HTML.Styled as H
-import Elmish.Test (find, tagName, testComponent, text, value, within, (##), ($$), (>>))
-import Elmish.Test.Events (change, clickOn)
+import Elmish.Test (attr, find, findAll, tagName, testComponent, text, value, within, (##), ($$), (>>))
+import Elmish.Test.Events (change, click, clickOn)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Assertions.String (shouldContain)
@@ -49,6 +51,16 @@ spec =
           value >>= shouldEqual "Frodo"
 
         text >>= (_ `shouldContain` "Hello, Frodo")
+
+        -- findAll
+        buttons <- findAll "button"
+        length buttons `shouldEqual` 2
+
+        names <- for buttons \b -> attr "class" $$ b
+        names `shouldEqual` ["t--inc", "t--dec"]
+
+        for_ buttons \b -> click $$ b
+        find ".t--count" >> text >>= shouldEqual "1"
 
 type State = { count :: Int, text :: String }
 
