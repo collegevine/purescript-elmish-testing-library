@@ -11,7 +11,7 @@ import Effect (Effect)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Exception (error)
 import Effect.Uncurried (EffectFn1, EffectFn3, runEffectFn1, runEffectFn3)
-import Elmish (ComponentDef, construct)
+import Elmish (ComponentDef, ReactElement, construct)
 import Elmish.Foreign (class CanPassToJavaScript)
 import Elmish.React as React
 import Web.DOM (Element)
@@ -50,6 +50,10 @@ testComponent def go = do
       React.render reactEl root
 
       pure root
+
+testElement :: ∀ m a. MonadEffect m => ReactElement -> ReaderT TestState m a -> m a
+testElement element =
+  testComponent { init: pure unit, view: \_ _ -> element, update: \_ _ -> pure unit }
 
 find :: ∀ m. Testable m => String -> m Element
 find selector =
