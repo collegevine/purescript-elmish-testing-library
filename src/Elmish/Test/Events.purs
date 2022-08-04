@@ -7,11 +7,11 @@ import Effect.Uncurried (EffectFn3, runEffectFn3)
 import Elmish.Foreign (class CanPassToJavaScript)
 import Elmish.Test.Combinators ((>>))
 import Elmish.Test.Query (find)
-import Elmish.Test.State (class Testable, askCurrent)
+import Elmish.Test.State (class Testable, currentNode)
 import Web.DOM (Element)
 
 fireEvent :: ∀ m r. Testable m => CanPassToJavaScript (Record r) => String -> Record r -> m Unit
-fireEvent name args = askCurrent >>= \e ->
+fireEvent name args = currentNode >>= \e ->
   liftEffect $ runEffectFn3 fireEvent_ name args e
 
 click :: ∀ m. Testable m => m Unit

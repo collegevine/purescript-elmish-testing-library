@@ -39,7 +39,4 @@ testElement :: ∀ m a. MonadEffect m => ReactElement -> ReaderT TestState m a -
 testElement element =
   testComponent { init: pure unit, view: \_ _ -> element, update: \_ _ -> pure unit }
 
-debug :: ∀ m. Testable m => m String
-debug = pure ""
-
 foreign import ensureDom_ :: Effect Unit

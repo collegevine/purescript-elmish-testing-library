@@ -16,8 +16,8 @@ newtype TestState = TestState
 class (MonadReader TestState m, MonadAff m) <= Testable m
 instance MonadAff m => Testable (ReaderT TestState m)
 
-askCurrent :: ∀ m. Testable m => m Element
-askCurrent = ask <#> \(TestState s) -> s.current
+currentNode :: ∀ m. Testable m => m Element
+currentNode = ask <#> \(TestState s) -> s.current
 
 crash :: ∀ m a. Testable m => String -> m a
 crash = liftAff <<< throwError <<< error
