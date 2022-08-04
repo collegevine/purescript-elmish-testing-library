@@ -6,8 +6,8 @@ module Elmish.Test
   , module Elmish.Test.SpinWait
   ) where
 
-import Elmish.Test.Bootstrap (debug, ensureDom_, testComponent, testElement)
+import Elmish.Test.Bootstrap (testComponent, testElement)
 import Elmish.Test.Combinators (chain, chainM, within, within', (##), ($$), (>>))
-import Elmish.Test.Events (change, click, clickOn, fireEvent, fireEvent_)
-import Elmish.Test.Query (attr, exists, find, findAll, innerText_, tagName, text, value, value_)
+import Elmish.Test.Events (change, click, clickOn, fireEvent)
+import Elmish.Test.Query (attr, exists, find, findAll, html, tagName, text, value)
 import Elmish.Test.SpinWait (waitUntil, waitUntil', waitWhile, waitWhile')

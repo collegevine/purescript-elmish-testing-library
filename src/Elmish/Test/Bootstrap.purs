@@ -1,4 +1,7 @@
-module Elmish.Test.Bootstrap where
+module Elmish.Test.Bootstrap
+  ( testComponent
+  , testElement
+  ) where
 
 import Prelude
 
@@ -8,7 +11,7 @@ import Effect (Effect)
 import Effect.Class (class MonadEffect, liftEffect)
 import Elmish (ComponentDef, ReactElement, construct)
 import Elmish.React as React
-import Elmish.Test.State (class Testable, TestState(..))
+import Elmish.Test.State (TestState(..))
 import Web.DOM.Document (createElement)
 import Web.DOM.Element as DOM
 import Web.DOM.Node (appendChild)

@@ -1,4 +1,9 @@
-module Elmish.Test.Events where
+module Elmish.Test.Events
+  ( change
+  , click
+  , clickOn
+  , fireEvent
+  ) where
 
 import Prelude
 

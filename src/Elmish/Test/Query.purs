@@ -1,4 +1,13 @@
-module Elmish.Test.Query where
+module Elmish.Test.Query
+  ( attr
+  , exists
+  , find
+  , findAll
+  , html
+  , tagName
+  , text
+  , value
+  ) where
 
 import Prelude
 
