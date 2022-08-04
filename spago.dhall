@@ -2,6 +2,7 @@
 , dependencies =
   [ "arrays"
   , "aff"
+  , "datetime"
   , "debug"
   , "effect"
   , "elmish"
