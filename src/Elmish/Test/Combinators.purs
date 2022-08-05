@@ -3,7 +3,7 @@ module Elmish.Test.Combinators where
 import Prelude
 
 import Control.Monad.Reader (local)
-import Data.Traversable (for, for_)
+import Data.Traversable (traverse, traverse_)
 import Elmish.Test.Query (find)
 import Elmish.Test.State (class Testable, TestState(..))
 import Web.DOM (Element)
@@ -71,10 +71,16 @@ chain = flip within'
 
 -- | Runs the given computation multiple times, in the context of each of the
 -- | given `Element`s.
-forEach :: ∀ m. Testable m => Array Element -> m Unit -> m Unit
-forEach els f = for_ els \el -> f $$ el
+-- |
+-- |     findAll "button" >> forEach click
+-- |
+forEach :: ∀ m. Testable m => m Unit -> Array Element -> m Unit
+forEach f = traverse_ \el -> f $$ el
 
 -- | Runs the given computation multiple times, in the context of each of the
 -- | given `Element`s, and returns their results as an array.
-mapEach :: ∀ m a. Testable m => Array Element -> m a -> m (Array a)
-mapEach els f = for els \el -> f $$ el
+-- |
+-- |     values <- findAll "input" >> mapEach (prop P.value)
+-- |
+mapEach :: ∀ m a. Testable m => m a -> Array Element -> m (Array a)
+mapEach f = traverse \el -> f $$ el
