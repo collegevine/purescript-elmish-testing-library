@@ -5,6 +5,8 @@ module Elmish.Test.Query
   , exists
   , find
   , findAll
+  , findFirst
+  , findNth
   , html
   , prop
   , tagName
@@ -36,6 +38,29 @@ find selector =
   findAll selector >>= case _ of
     [el] -> pure el
     els -> crash $ "Expected to find one element matching '" <> selector <> "', but found " <> show (length els)
+
+-- | Finds the first element out of possibly many matching the given selector.
+-- | If there are no elements matching the selector, throws an exception.
+findFirst :: ∀ m. Testable m => String -> m Element
+findFirst = findNth 0
+
+
+-- | Finds the n-th (zero-based) element out of possibly many matching the given
+-- | selector. If there are no elements matching the selector, throws an
+-- | exception.
+findNth :: ∀ m. Testable m => Int -> String -> m Element
+findNth idx selector =
+  findAll selector >>= \all -> case all !! idx of
+    Just el -> pure el
+    Nothing -> crash $ fold
+      [ "Expected to find "
+      , show idx
+      , "th element matching '"
+      , selector
+      , "', but there are only "
+      , show (length all)
+      , " elements"
+      ]
 
 -- | Finds zero or more elements by CSS selector.
 -- |
