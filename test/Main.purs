@@ -9,7 +9,8 @@ import Effect.Aff (launchAff_)
 import Elmish (Dispatch, ReactElement, Transition, (<?|))
 import Elmish.Foreign (readForeign)
 import Elmish.HTML.Styled as H
-import Elmish.Test (attr, find, findAll, tagName, testComponent, text, value, within, (##), ($$), (>>))
+import Elmish.Test (attr, find, findAll, prop, tagName, testComponent, text, within, (##), ($$), (>>))
+import Elmish.Test.DomProps as P
 import Elmish.Test.Events (change, click, clickOn)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -46,9 +47,9 @@ spec =
 
         -- change
         within "input" do
-          value >>= shouldEqual "Harry"
+          prop P.value >>= shouldEqual "Harry"
           change "Frodo"
-          value >>= shouldEqual "Frodo"
+          prop P.value >>= shouldEqual "Frodo"
 
         text >>= (_ `shouldContain` "Hello, Frodo")
 

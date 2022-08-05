@@ -1,0 +1,33 @@
+{
+"name": "purescript-elmish-testing-library",
+"license": [
+    "MIT"
+],
+"repository": {
+    "type": "git",
+    "url": "https://github.com/collegevine/purescript-elmish-testing-library.git"
+},
+"ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+],
+"dependencies": {
+    "purescript-aff": "^v7.0.0",
+    "purescript-arrays": "^v7.0.0",
+    "purescript-datetime": "^v6.0.0",
+    "purescript-debug": "^v6.0.0",
+    "purescript-effect": "^v4.0.0",
+    "purescript-elmish": "^v0.8.3",
+    "purescript-elmish-html": "v0.7.2",
+    "purescript-exceptions": "^v6.0.0",
+    "purescript-foldable-traversable": "^v6.0.0",
+    "purescript-maybe": "^v6.0.0",
+    "purescript-prelude": "^v6.0.0",
+    "purescript-spec": "^v7.0.0",
+    "purescript-transformers": "^v6.0.0",
+    "purescript-web-dom": "^v6.0.0",
+    "purescript-web-html": "^v4.0.0"
+}
+}
