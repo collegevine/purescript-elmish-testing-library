@@ -8,10 +8,12 @@ import Prelude
 import Control.Monad.Reader (ReaderT, runReaderT)
 import Data.Traversable (traverse_)
 import Effect (Effect)
-import Effect.Class (class MonadEffect, liftEffect)
+import Effect.Aff.Class (class MonadAff)
+import Effect.Class (liftEffect)
 import Elmish (ComponentDef, ReactElement, construct)
 import Elmish.React as React
 import Elmish.Test.State (TestState(..))
+import Web.DOM.ChildNode (remove)
 import Web.DOM.Document (createElement)
 import Web.DOM.Element as DOM
 import Web.DOM.Node (appendChild)
@@ -20,10 +22,22 @@ import Web.HTML.HTMLDocument (body, toDocument)
 import Web.HTML.HTMLElement as H
 import Web.HTML.Window (document)
 
-testComponent :: ∀ m a msg state. MonadEffect m => ComponentDef msg state -> ReaderT TestState m a -> m a
+-- | Mount the given component to a DOM element, run the given computation in
+-- | the context of that element, return the computation's result.
+-- |
+-- | Example:
+-- |
+-- |     describe "My component" $
+-- |       it "should work" $
+-- |         testComponent { init, view, update } do
+-- |           find "h1" >> text >>= shouldEqual "Hello"
+-- |
+testComponent :: ∀ m a msg state. MonadAff m => ComponentDef msg state -> ReaderT TestState m a -> m a
 testComponent def go = do
   root <- liftEffect mount
-  runReaderT go $ TestState { root, current: root }
+  result <- runReaderT go $ TestState { root, current: root }
+  liftEffect $ remove $ DOM.toChildNode root
+  pure result
   where
     mount = do
       ensureDom_
@@ -38,7 +52,9 @@ testComponent def go = do
 
       pure root
 
-testElement :: ∀ m a. MonadEffect m => ReactElement -> ReaderT TestState m a -> m a
+-- | A convenience version of `testComponent` for "pure" components - i.e.
+-- | components that consist only of `view`, no `init` or `update`.
+testElement :: ∀ m a. MonadAff m => ReactElement -> ReaderT TestState m a -> m a
 testElement element =
   testComponent { init: pure unit, view: \_ _ -> element, update: \_ _ -> pure unit }
 

@@ -8,6 +8,8 @@ import Effect.Aff (delay, error)
 import Effect.Aff.Class (liftAff)
 import Elmish.Test.State (class Testable)
 
+-- | Performs active wait while the given condition is true. Times out with a
+-- | crash after a second.
 waitWhile :: ∀ m. Testable m => m Boolean -> m Unit
 waitWhile = waitWhile' (Milliseconds 1000.0)
 
