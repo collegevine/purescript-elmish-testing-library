@@ -76,7 +76,7 @@ module Elmish.Test
   ) where
 
 import Elmish.Test.Bootstrap (testComponent, testElement)
-import Elmish.Test.Combinators (chain, chainM, within, within', (##), ($$), (>>))
+import Elmish.Test.Combinators (chain, chainM, forEach, mapEach, within, within', (##), ($$), (>>))
 import Elmish.Test.Events (change, click, clickOn, fireEvent)
 import Elmish.Test.Query (attr, exists, find, findAll, findFirst, findNth, html, prop, tagName, text)
 import Elmish.Test.SpinWait (waitUntil, waitUntil', waitWhile, waitWhile')
