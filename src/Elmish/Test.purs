@@ -11,6 +11,8 @@
 -- | * Chain operations via `>>`, like `find "button" >> text` or `find "div" >>
 -- |   find "a" >> attr "href"`
 -- | * `within` to zoom into an element and run some code in its context.
+-- | * `forEach` and `mapEach` to run computations in the context of multiple
+-- |   elements in sequence.
 -- |
 -- | An illustrating example:
 -- |
@@ -27,8 +29,8 @@
 -- |
 -- |         within "div.wrapper" do
 -- |           text >>= (_ `shouldContain` "Some text inside a wapper")
--- |           findAll "a" >>= traverse_ \anchor ->
--- |             anchor ## attr "href" >>= shouldEqual "http://foo.bar"
+-- |           findAll "a" >> forEach do
+-- |             attr "href" >>= shouldEqual "http://foo.bar"
 -- | ```
 -- |
 -- | Every DOM-manipulating operation (e.g. `find`, `text`, `fireEvent`, and so
@@ -56,7 +58,7 @@
 -- |     -- click a button within the 6th subnode of the root <div>
 -- |     find "div" >> childAt 5 >> find "button" >> click
 -- |
--- | Finally, if you have an `Element` value on your hands, you can apply a
+-- | If you have an `Element` value on your hands, you can apply a
 -- | DOM-manipulating operation to it via `$$` (prefix) or `##` (postfix), for
 -- | example:
 -- |
@@ -66,6 +68,28 @@
 -- |
 -- | These operators are necessary, because operations can't be applied as
 -- | functions (e.g. `click button`), since they don't take a node as parameter.
+-- |
+-- | Finally, if you have an array of elements (e.g. obtained via `findAll`),
+-- | you could iterate over them with `traverse`, like:
+-- |
+-- |     findAll "button" >>= traverse_ \button -> button ## click
+-- |     findAll "a" >>= traverse_ \a ->
+-- |       within' a do
+-- |         attr "href" >>= shouldEqual "http://foo"
+-- |         text >>= shouldEqual "Click me"
+-- |
+-- | But it's more convenient to use special helper functions `forEach` and
+-- | `mapEach` instead. These functions run the given computation in the context
+-- | of every element in the array:
+-- |
+-- |     findAll "button" >> forEach click
+-- |     findAll "a" >> forEach do
+-- |       attr "href" >>= shouldEqual "http://foo"
+-- |       text >>= shouldEqual "Click me"
+-- |
+-- | Or even:
+-- |
+-- |     findAll "a" >> mapEach text >>= shouldEqual ["Click me", "Click me"]
 -- |
 module Elmish.Test
   ( module Elmish.Test.Bootstrap
