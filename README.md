@@ -7,4 +7,4 @@ library](https://github.com/capricorn86/happy-dom). A different DOM emulator can
 also be used as long as it's initialized before the first call to Elmish Testing
 Library.
 
-See documentation [on Pursuit](https://pursuit.purescript.org/packages/purescript-elmish-testing-library).
+See documentation [on Pursuit](https://pursuit.purescript.org/packages/purescript-elmish-testing-library/docs/Elmish.Test).
