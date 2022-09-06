@@ -11,6 +11,7 @@
   , "exceptions"
   , "foldable-traversable"
   , "maybe"
+  , "nullable"
   , "prelude"
   , "spec"
   , "transformers"
