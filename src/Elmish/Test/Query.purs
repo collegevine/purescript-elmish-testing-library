@@ -18,9 +18,10 @@ import Prelude
 
 import Data.Array (fold, length, mapMaybe, null, (!!))
 import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Nullable as N
 import Effect.Class (liftEffect)
 import Effect.Uncurried (EffectFn1, EffectFn2, runEffectFn1, runEffectFn2)
-import Elmish.Test.DomProps (DomProp)
+import Elmish.Test.DomProps (class DomPropType, DomProp, defaultValue)
 import Elmish.Test.State (class Testable, crash, currentNode)
 import Web.DOM (Element)
 import Web.DOM.Element as DOM
@@ -136,11 +137,12 @@ attr name = currentNode >>= \e -> liftEffect $ DOM.getAttribute name e <#> fromM
 -- |
 -- |     find "input" >> prop P.value >>= shouldEqual "hello"
 -- |
-prop :: ∀ m a. Testable m => DomProp a -> m a
-prop name = currentNode >>= \e -> liftEffect $ runEffectFn2 prop_ name e
+prop :: ∀ m a. Testable m => DomPropType a => DomProp a -> m a
+prop name = currentNode >>= \e -> liftEffect $
+  runEffectFn2 prop_ name e <#> N.toMaybe <#> fromMaybe defaultValue
 
 foreign import innerText_ :: EffectFn1 Element String
 
 foreign import outerHTML_ :: EffectFn1 Element String
 
-foreign import prop_ :: ∀ a. EffectFn2 (DomProp a) Element a
+foreign import prop_ :: ∀ a. EffectFn2 (DomProp a) Element (N.Nullable a)
