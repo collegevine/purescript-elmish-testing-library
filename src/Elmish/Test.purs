@@ -94,6 +94,7 @@
 module Elmish.Test
   ( module Elmish.Test.Bootstrap
   , module Elmish.Test.Combinators
+  , module Elmish.Test.Discover
   , module Elmish.Test.Events
   , module Elmish.Test.Query
   , module Elmish.Test.SpinWait
@@ -101,6 +102,7 @@ module Elmish.Test
 
 import Elmish.Test.Bootstrap (testComponent, testElement)
 import Elmish.Test.Combinators (chain, chainM, forEach, mapEach, within, within', (##), ($$), (>>))
+import Elmish.Test.Discover (childAt, children, find, findAll, findFirst, findNth)
 import Elmish.Test.Events (change, click, clickOn, fireEvent)
-import Elmish.Test.Query (attr, exists, find, findAll, findFirst, findNth, html, prop, tagName, text)
+import Elmish.Test.Query (attr, count, exists, html, prop, tagName, text)
 import Elmish.Test.SpinWait (waitUntil, waitUntil', waitWhile, waitWhile')

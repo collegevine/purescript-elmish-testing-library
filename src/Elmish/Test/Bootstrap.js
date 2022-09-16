@@ -1,7 +1,7 @@
-import { GlobalRegistrator } from '@happy-dom/global-registrator';
+import registerDom from 'global-jsdom'
 
 export const ensureDom_ = () => {
   if (typeof window === "undefined") {
-    GlobalRegistrator.register()
+    registerDom()
   }
 }
