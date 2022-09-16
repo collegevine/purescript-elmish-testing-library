@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "spago install",
     "build": "spago build",
-    "test": "spago test"
+    "test": "spago -x test.dhall test"
   },
   "author": {
     "name": "Fyodor Soikin",
