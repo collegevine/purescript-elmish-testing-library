@@ -11,7 +11,7 @@ import Effect.Class (liftEffect)
 import Effect.Uncurried (EffectFn3, runEffectFn3)
 import Elmish.Foreign (class CanPassToJavaScript)
 import Elmish.Test.Combinators ((>>))
-import Elmish.Test.Query (find)
+import Elmish.Test.Discover (find)
 import Elmish.Test.State (class Testable, currentNode)
 import Web.DOM (Element)
 

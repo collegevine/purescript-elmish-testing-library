@@ -4,7 +4,7 @@ import Prelude
 
 import Control.Monad.Reader (local)
 import Data.Traversable (traverse, traverse_)
-import Elmish.Test.Query (find)
+import Elmish.Test.Discover (find)
 import Elmish.Test.State (class Testable, TestState(..))
 import Web.DOM (Element)
 

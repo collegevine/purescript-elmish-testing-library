@@ -14,7 +14,6 @@ import Elmish.Test.DomProps as P
 import Elmish.Test.Events (change, click, clickOn)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Test.Spec.Assertions.String (shouldContain)
 import Test.Spec.Reporter (consoleReporter)
 import Test.Spec.Runner (runSpec)
 
@@ -51,7 +50,7 @@ spec =
           change "Frodo"
           prop P.value >>= shouldEqual "Frodo"
 
-        text >>= (_ `shouldContain` "Hello, Frodo")
+        text >>= shouldEqual "1IncDecHello, Frodo"
 
         -- findAll
         buttons <- findAll "button"
