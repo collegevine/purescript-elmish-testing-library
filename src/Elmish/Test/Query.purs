@@ -3,6 +3,7 @@ module Elmish.Test.Query
   , count
   , exists
   , html
+  , nearestEnclosingReactComponentName
   , prop
   , tagName
   , text
@@ -58,8 +59,13 @@ prop :: ∀ m a. Testable m => DomPropType a => DomProp a -> m a
 prop name = currentNode >>= \e -> liftEffect $
   runEffectFn2 prop_ name e <#> N.toMaybe <#> fromMaybe defaultValue
 
+nearestEnclosingReactComponentName :: ∀ m. Testable m => m String
+nearestEnclosingReactComponentName = currentNode >>= \e -> liftEffect $ runEffectFn1 reactComponentName_ e
+
 foreign import innerText_ :: EffectFn1 Element String
 
 foreign import outerHTML_ :: EffectFn1 Element String
 
 foreign import prop_ :: ∀ a. EffectFn2 (DomProp a) Element (N.Nullable a)
+
+foreign import reactComponentName_ :: EffectFn1 Element String

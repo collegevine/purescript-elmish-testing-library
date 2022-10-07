@@ -7,9 +7,10 @@ import Data.Traversable (for, for_)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Elmish (Dispatch, ReactElement, Transition, (<?|))
+import Elmish.Component (ComponentName(..), wrapWithLocalState)
 import Elmish.Foreign (readForeign)
 import Elmish.HTML.Styled as H
-import Elmish.Test (attr, find, findAll, prop, tagName, testComponent, text, within, (##), ($$), (>>))
+import Elmish.Test (attr, find, findAll, nearestEnclosingReactComponentName, prop, tagName, testComponent, text, within, (##), ($$), (>>))
 import Elmish.Test.DomProps as P
 import Elmish.Test.Events (change, click, clickOn)
 import Test.Spec (Spec, describe, it)
@@ -50,7 +51,7 @@ spec =
           change "Frodo"
           prop P.value >>= shouldEqual "Frodo"
 
-        text >>= shouldEqual "1IncDecHello, Frodo"
+        text >>= shouldEqual "1IncDecHello, FrodoFoo"
 
         -- findAll
         buttons <- findAll "button"
@@ -61,6 +62,13 @@ spec =
 
         for_ buttons \b -> click $$ b
         find ".t--count" >> text >>= shouldEqual "1"
+
+        -- React component names
+        nearestEnclosingReactComponentName >>= shouldEqual "ElmishRoot"
+
+        within ".t--standalone" do
+          text >>= shouldEqual "Foo"
+          nearestEnclosingReactComponentName >>= shouldEqual "Elmish_StandaloneComponent"
 
 type State = { count :: Int, text :: String }
 
@@ -89,4 +97,14 @@ view state dispatch =
     }
 
   , H.span "" $ "Hello, " <> state.text
+
+  , standaloneComponent { text: "Foo" }
   ]
+
+standaloneComponent :: { text :: String } -> ReactElement
+standaloneComponent = wrapWithLocalState (ComponentName "StandaloneComponent")
+  \{ text } ->
+    { init: pure unit
+    , update: \_ _ -> pure unit
+    , view: \_ _ -> H.span "t--standalone" text
+    }
