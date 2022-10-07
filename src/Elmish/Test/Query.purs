@@ -21,7 +21,6 @@ import Elmish.Test.DomProps (class DomPropType, DomProp, defaultValue)
 import Elmish.Test.State (class Testable, currentNode)
 import Web.DOM (Element)
 import Web.DOM.Element as DOM
-import Web.DOM.Node (textContent)
 
 -- | Returns `true` if at least one element exists matching the given CSS
 -- | selector.
@@ -35,7 +34,7 @@ count selector = length <$> findAll selector
 
 -- | Returns full inner text of the current-context element.
 text :: ∀ m. Testable m => m String
-text = currentNode >>= \el -> liftEffect $ textContent (DOM.toNode el)
+text = currentNode >>= (liftEffect <<< runEffectFn1 innerText_)
 
 -- | Returns HTML representation of the current-context element.
 html :: ∀ m. Testable m => m String
@@ -58,6 +57,8 @@ attr name = currentNode >>= \e -> liftEffect $ DOM.getAttribute name e <#> fromM
 prop :: ∀ m a. Testable m => DomPropType a => DomProp a -> m a
 prop name = currentNode >>= \e -> liftEffect $
   runEffectFn2 prop_ name e <#> N.toMaybe <#> fromMaybe defaultValue
+
+foreign import innerText_ :: EffectFn1 Element String
 
 foreign import outerHTML_ :: EffectFn1 Element String
 
