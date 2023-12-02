@@ -18,7 +18,7 @@
         "purescript-arrays": "^v7.0.0",
         "purescript-datetime": "^v6.0.0",
         "purescript-effect": "^v4.0.0",
-        "purescript-elmish": "^v0.8.2",
+        "purescript-elmish": "^v0.11.1",
         "purescript-exceptions": "^v6.0.0",
         "purescript-foldable-traversable": "^v6.0.0",
         "purescript-maybe": "^v6.0.0",
