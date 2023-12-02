@@ -36,6 +36,7 @@ testComponent :: ∀ m a msg state. MonadAff m => ComponentDef msg state -> Read
 testComponent def go = do
   root <- liftEffect mount
   result <- runReaderT go $ TestState { root, current: root }
+  liftEffect $ React.unmount root
   liftEffect $ remove $ DOM.toChildNode root
   pure result
   where
