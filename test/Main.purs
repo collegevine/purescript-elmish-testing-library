@@ -6,9 +6,9 @@ import Data.Array (length)
 import Data.Traversable (for, for_)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
-import Elmish (Dispatch, ReactElement, Transition, (<?|))
+import Elmish (Dispatch, ReactElement, Transition, (<|))
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
-import Elmish.Foreign (readForeign)
+import Elmish.HTML.Events as E
 import Elmish.HTML.Styled as H
 import Elmish.Test (attr, find, findAll, nearestEnclosingReactComponentName, prop, tagName, testComponent, text, within, (##), ($$), (>>))
 import Elmish.Test.DomProps as P
@@ -86,14 +86,13 @@ view :: State -> Dispatch Message -> ReactElement
 view state dispatch =
   H.div ""
   [ H.div "t--count" $ show state.count
-  , H.button_ "t--inc" { onClick: dispatch Inc } "Inc"
-  , H.button_ "t--dec" { onClick: dispatch Dec } "Dec"
+  , H.button_ "t--inc" { onClick: dispatch <| Inc } "Inc"
+  , H.button_ "t--dec" { onClick: dispatch <| Dec } "Dec"
 
   , H.input_ ""
     { type: "text"
     , value: state.text
-    , onChange: dispatch <?| \e -> readForeign e <#>
-        \(x :: { target :: { value :: _ } }) -> TextChanged x.target.value
+    , onChange: dispatch <| TextChanged <<< E.inputText
     }
 
   , H.span "" $ "Hello, " <> state.text
