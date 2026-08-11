@@ -5,8 +5,7 @@ import Prelude
 import Data.Array (length)
 import Data.Traversable (for, for_)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
-import Elmish (Dispatch, ReactElement, Transition, (<|))
+import Elmish (Dispatch, ReactElement, Transition)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
 import Elmish.HTML.Events as E
 import Elmish.HTML.Styled as H
@@ -15,11 +14,11 @@ import Elmish.Test.DomProps as P
 import Elmish.Test.Events (change, click, clickOn)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Test.Spec.Reporter (consoleReporter)
-import Test.Spec.Runner (runSpec)
+import Test.Spec.Reporter (specReporter)
+import Test.Spec.Runner.Node (runSpecAndExitProcess)
 
 main :: Effect Unit
-main = launchAff_ $ runSpec [consoleReporter] spec
+main = runSpecAndExitProcess [specReporter] spec
 
 spec :: Spec Unit
 spec =
@@ -86,13 +85,13 @@ view :: State -> Dispatch Message -> ReactElement
 view state dispatch =
   H.div ""
   [ H.div "t--count" $ show state.count
-  , H.button_ "t--inc" { onClick: dispatch <| Inc } "Inc"
-  , H.button_ "t--dec" { onClick: dispatch <| Dec } "Dec"
+  , H.button_ "t--inc" { onClick: H.handle \_ -> dispatch Inc } "Inc"
+  , H.button_ "t--dec" { onClick: H.handle \_ -> dispatch Dec } "Dec"
 
   , H.input_ ""
     { type: "text"
     , value: state.text
-    , onChange: dispatch <| TextChanged <<< E.inputText
+    , onChange: H.handle \e -> dispatch $ TextChanged $ E.inputText e
     }
 
   , H.span "" $ "Hello, " <> state.text

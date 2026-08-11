@@ -1,0 +1,34 @@
+package:
+  name: elmish-testing-library
+  publish:
+    version: 0.3.2
+    license: MIT
+    location:
+      githubOwner: collegevine
+      githubRepo: purescript-elmish-testing-library
+  dependencies:
+    - aff: ">=8.0.0 <9.0.0"
+    - arrays: ">=7.3.0 <8.0.0"
+    - datetime: ">=6.1.0 <7.0.0"
+    - effect: ">=4.0.0 <5.0.0"
+    - elmish: ">=0.14.0 <0.15.0"
+    - exceptions: ">=6.1.0 <7.0.0"
+    - foldable-traversable: ">=6.0.0 <7.0.0"
+    - maybe: ">=6.0.0 <7.0.0"
+    - nullable: ">=6.0.0 <7.0.0"
+    - prelude: ">=6.0.2 <7.0.0"
+    - transformers: ">=6.1.0 <7.0.0"
+    - web-dom: ">=6.0.0 <7.0.0"
+    - web-html: ">=4.1.1 <5.0.0"
+  test:
+    main: Test.Main
+    dependencies:
+      - elmish-html
+      - spec
+      - spec-node
+workspace:
+  extraPackages:
+    elmish: 0.14.0
+    elmish-html: 0.12.0
+  packageSet:
+    registry: 73.1.0
