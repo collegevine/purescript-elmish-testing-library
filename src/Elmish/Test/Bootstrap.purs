@@ -11,7 +11,7 @@ import Effect (Effect)
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (liftEffect)
 import Elmish (ComponentDef, ReactElement, construct)
-import Elmish.React as React
+import Elmish.HTML.DOM as ReactDOM
 import Elmish.Test.State (TestState(..))
 import Web.DOM.ChildNode (remove)
 import Web.DOM.Document (createElement)
@@ -36,7 +36,7 @@ testComponent :: ∀ m a msg state. MonadAff m => ComponentDef msg state -> Read
 testComponent def go = do
   root <- liftEffect mount
   result <- runReaderT go $ TestState { root, current: root }
-  liftEffect $ React.unmount root
+  liftEffect $ ReactDOM.unmount root
   liftEffect $ remove $ DOM.toChildNode root
   pure result
   where
@@ -49,7 +49,7 @@ testComponent def go = do
         appendChild (DOM.toNode root) (H.toNode theBody)
 
       reactEl <- construct def
-      React.render reactEl root
+      ReactDOM.render reactEl root
 
       pure root
 
