@@ -18,7 +18,10 @@
               "effect": ">=4.0.0 <5.0.0"
             },
             {
-              "elmish": ">=0.14.0 <0.15.0"
+              "elmish": ">=0.15.0 <0.16.0"
+            },
+            {
+              "elmish-html": ">=0.13.0 <0.14.0"
             },
             {
               "exceptions": ">=6.1.0 <7.0.0"
@@ -48,7 +51,6 @@
         },
         "test": {
           "dependencies": [
-            "elmish-html",
             "spec",
             "spec-node"
           ]
@@ -647,8 +649,14 @@
       }
     },
     "extra_packages": {
-      "elmish": "0.14.0",
-      "elmish-html": "0.12.0"
+      "elmish": {
+        "git": "https://github.com/collegevine/purescript-elmish.git",
+        "ref": "v0.15.0"
+      },
+      "elmish-html": {
+        "git": "https://github.com/collegevine/purescript-elmish-html.git",
+        "ref": "v0.13.0"
+      }
     }
   },
   "packages": {
@@ -895,15 +903,14 @@
       ]
     },
     "elmish": {
-      "type": "registry",
-      "version": "0.14.0",
-      "integrity": "sha256-IRVU9rKJBa+Q1luPIseBsvj16t8dOLobEBfOmCNj/rA=",
+      "type": "git",
+      "url": "https://github.com/collegevine/purescript-elmish.git",
+      "rev": "76d30f1b2a97f7b50f2c0aae5235488f12bf9006",
       "dependencies": [
         "aff",
         "argonaut-core",
         "arrays",
         "bifunctors",
-        "console",
         "debug",
         "effect",
         "either",
@@ -920,16 +927,15 @@
         "refs",
         "typelevel-prelude",
         "undefined-is-not-a-problem",
-        "unsafe-coerce",
-        "web-dom",
-        "web-html"
+        "unsafe-coerce"
       ]
     },
     "elmish-html": {
-      "type": "registry",
-      "version": "0.12.0",
-      "integrity": "sha256-OvGiT61Xn7hnkxwSyAUkqKffnSxqkp20nPekc94QHY4=",
+      "type": "git",
+      "url": "https://github.com/collegevine/purescript-elmish-html.git",
+      "rev": "5534f80f90de8d82c652d81f32ebdbe8067e1823",
       "dependencies": [
+        "console",
         "effect",
         "elmish",
         "foreign",

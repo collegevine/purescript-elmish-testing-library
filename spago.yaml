@@ -28,12 +28,11 @@ package:
       - spec-node
 workspace:
   extraPackages:
-    # TODO: revert to `elmish: 0.15.0` / `elmish-html: 0.13.0` once those are released
     elmish:
       git: https://github.com/collegevine/purescript-elmish.git
-      ref: split-react
+      ref: v0.15.0
     elmish-html:
       git: https://github.com/collegevine/purescript-elmish-html.git
-      ref: split-react
+      ref: v0.13.0
   packageSet:
     registry: 73.1.0
