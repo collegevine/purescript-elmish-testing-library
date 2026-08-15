@@ -12,6 +12,7 @@ import Effect.Uncurried (EffectFn3, runEffectFn3)
 import Elmish.Foreign (class CanPassToJavaScript)
 import Elmish.Test.Combinators ((>>))
 import Elmish.Test.Discover (find)
+import Elmish.Test.React (act)
 import Elmish.Test.State (class Testable, currentNode)
 import Web.DOM (Element)
 
@@ -25,8 +26,10 @@ import Web.DOM (Element)
 -- |     find "input" >> fireEvent "change" { target: { value: "some text" } }
 -- |     find "input" >> fireEvent "keyDown" { key: "Enter", keyCode: 13, which: 13 }
 -- |
--- | This function uses the `Simulate` function from `react-dom/test-utils`. See
--- | https://reactjs.org/docs/test-utils.html#simulate
+-- | Event names are React's camel-cased ones (`keyDown`, not `keydown`). The
+-- | events themselves are dispatched natively, via `fireEvent` from
+-- | `@testing-library/dom`, and picked up by React's event delegation. See
+-- | https://testing-library.com/docs/dom-testing-library/api-events
 -- |
 -- | If the arguments record contains a field `target`, which in turn contains a
 -- | field `value`, the value of that field is assigned to the `value` property
@@ -37,7 +40,7 @@ import Web.DOM (Element)
 -- |
 fireEvent :: ∀ m r. Testable m => CanPassToJavaScript (Record r) => String -> Record r -> m Unit
 fireEvent name args = currentNode >>= \e ->
-  liftEffect $ runEffectFn3 fireEvent_ name args e
+  liftEffect $ act $ runEffectFn3 fireEvent_ name args e
 
 -- | A convenience specialization of `fireEvent`, simulating the `click` event.
 -- |

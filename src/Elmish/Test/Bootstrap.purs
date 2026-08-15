@@ -12,6 +12,7 @@ import Effect.Aff.Class (class MonadAff)
 import Effect.Class (liftEffect)
 import Elmish (ComponentDef, ReactElement, construct)
 import Elmish.HTML.DOM as ReactDOM
+import Elmish.Test.React (act)
 import Elmish.Test.State (TestState(..))
 import Web.DOM.ChildNode (remove)
 import Web.DOM.Document (createElement)
@@ -49,7 +50,7 @@ testComponent def go = do
         appendChild (DOM.toNode root) (H.toNode theBody)
 
       reactEl <- construct def
-      ReactDOM.render reactEl root
+      act $ ReactDOM.render reactEl root
 
       pure root
 
